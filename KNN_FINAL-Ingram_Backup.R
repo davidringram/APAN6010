@@ -1,4 +1,4 @@
-packages <- c('tidyverse', 'recipes', 'cluster', 'rattle', 'tidyclust') #'tidymodels', 'tidyquant', 'plotly')
+packages <- c('tidyverse', 'recipes', 'cluster', 'rattle', 'tidyclust', 'dplyr') #'tidymodels', 'tidyquant', 'plotly')
 lapply(packages, library, character.only=TRUE)
 
 setwd("/Users/davidingram/Desktop/R_Final")
@@ -8,8 +8,6 @@ setwd("/Users/davidingram/Desktop/R_Final")
 airline.raw <- read.csv("airline.review.cleaned.csv")
 head(airline.raw)
 
-is.na(airline.raw)
-
 contains_any_na = sapply(airline.raw, function(x) any(is.na(x)))
 names(airline.raw)[contains_any_na]
 
@@ -17,8 +15,11 @@ summary(airline.raw)
 
 # === Prep & Drop NAs === (drops to 536, but over that 500 mark)
 
-airline.raw.drop <- airline.raw %>%
-  select(-aircraft_type, -layover, -arriving_dest, -departing_dest, -country, -date_flown, -X)
+to.drop <- c('aircraft_type', 'layover', 'arriving_dest', 'departing_dest', 'country', 'date_flown', 'X', 'wifi_connectivity')
+to.keep <- c('type_of_travellers', 'seat_types','seat_comfort','cabin_staff_service', 
+             'ground_service','food_beverages','inflight_entertainment', 'value_for_money','recommended')
+
+airline.raw.drop <- airline.raw %>% select(-one_of(to.drop))
 
 airline.kmeans <- drop_na(airline.raw.drop)
 
